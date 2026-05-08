@@ -1,3 +1,11 @@
+-- GDScript LSP (connects to running Godot editor on port 6005)
+vim.lsp.config("gdscript", {
+	cmd = vim.lsp.rpc.connect("127.0.0.1", 6005),
+	filetypes = { "gdscript" },
+	root_markers = { "project.godot", ".git" },
+})
+vim.lsp.enable("gdscript")
+
 -- LSP server installation
 require("mason").setup()
 
@@ -8,6 +16,7 @@ require("mason-lspconfig").setup({
 		"cssls",
 		"css_variables",
 		"eslint",
+		"glsl_analyzer",
 		"graphql",
 		"html",
 		"rust_analyzer",
@@ -19,6 +28,11 @@ require("mason-lspconfig").setup({
 -- Extend css_variables to more filetypes
 vim.lsp.config("css_variables", {
 	filetypes = { "css", "scss", "less", "html", "svelte", "astro" },
+})
+
+-- Extend glsl_analyzer to gdshader files
+vim.lsp.config("glsl_analyzer", {
+	filetypes = { "glsl", "vert", "frag", "comp", "tesc", "tese", "geom", "gdshader" },
 })
 
 -- Enable all installed servers

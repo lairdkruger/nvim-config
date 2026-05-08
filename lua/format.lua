@@ -14,6 +14,7 @@ require("conform").setup({
 		html = { "prettier" },
 		python = { "black" },
 		lua = { "stylua" },
+		gdscript = { "gdformat" },
 	},
 	formatters = {
 		prettier = {

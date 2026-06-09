@@ -1,6 +1,28 @@
 -- Treesitter
 require("nvim-treesitter").setup()
 
+-- Treesitter textobjects
+vim.cmd.packadd("nvim-treesitter-textobjects")
+local ts_select = require("nvim-treesitter-textobjects.select")
+require("nvim-treesitter-textobjects").setup({
+	select = {
+		lookahead = true,
+		include_surrounding_whitespace = false,
+	},
+})
+vim.keymap.set({ "x", "o" }, "af", function()
+	ts_select.select_textobject("@function.outer", "textobjects")
+end, { desc = "TS: around function" })
+vim.keymap.set({ "x", "o" }, "if", function()
+	ts_select.select_textobject("@function.inner", "textobjects")
+end, { desc = "TS: inner function" })
+vim.keymap.set({ "x", "o" }, "ac", function()
+	ts_select.select_textobject("@class.outer", "textobjects")
+end, { desc = "TS: around class" })
+vim.keymap.set({ "x", "o" }, "ic", function()
+	ts_select.select_textobject("@class.inner", "textobjects")
+end, { desc = "TS: inner class" })
+
 -- Colorscheme
 require("evergarden").setup({
 	theme = { variant = "fall" },

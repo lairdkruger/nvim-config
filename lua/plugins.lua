@@ -46,6 +46,7 @@ vim.pack.add({
 
 	-- Syntax highlighting (parsers + queries)
 	"https://github.com/nvim-treesitter/nvim-treesitter",
+	"https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
 
 	-- Completion
 	"https://github.com/Saghen/blink.lib",

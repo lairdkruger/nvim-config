@@ -15,7 +15,9 @@ vim.api.nvim_create_autocmd("LspProgress", {
 })
 
 -- Auto-read files changed on disk
-vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter" }, {
+-- checktime fires frequently so external changes are detected near-instantly.
+-- autoread (set in options.lua) silently reloads if buffer is clean.
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
 	group = vim.api.nvim_create_augroup("auto-read", { clear = true }),
 	command = "checktime",
 })
@@ -40,6 +42,29 @@ vim.api.nvim_create_autocmd("FileType", {
 	group = vim.api.nvim_create_augroup("telescope-no-completion", { clear = true }),
 	callback = function()
 		vim.opt_local.autocomplete = false
+	end,
+})
+
+-- Auto-reload unmodified buffers when file changes externally.
+-- This suppresses the "modified elsewhere" warning for clean buffers
+-- (e.g. edited by Godot, AI tools). Dirty buffers still warn on :w.
+vim.api.nvim_create_autocmd("FileChangedShell", {
+	group = vim.api.nvim_create_augroup("auto-reload-unmodified", { clear = true }),
+	callback = function()
+		if not vim.bo.modified then
+			vim.cmd("e!")
+		end
+	end,
+})
+
+-- Soft-wrap text-like files without modifying file contents
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "markdown", "text" },
+	group = vim.api.nvim_create_augroup("wrap-text-files", { clear = true }),
+	callback = function()
+		vim.opt_local.wrap = true
+		vim.opt_local.linebreak = true
+		vim.opt_local.breakindent = true
 	end,
 })
 

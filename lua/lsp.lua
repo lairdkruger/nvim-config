@@ -21,6 +21,7 @@ require("mason-lspconfig").setup({
 		"html",
 		"rust_analyzer",
 		"svelte",
+		"tailwindcss",
 		"ts_ls",
 	},
 })
@@ -30,12 +31,41 @@ vim.lsp.config("css_variables", {
 	filetypes = { "css", "scss", "less", "html", "svelte", "astro" },
 })
 
--- Extend glsl_analyzer to gdshader files
+-- Extend glsl_analyzer to gdshader files, remove unused filetypes
 vim.lsp.config("glsl_analyzer", {
-	filetypes = { "glsl", "vert", "frag", "comp", "tesc", "tese", "geom", "gdshader" },
+	filetypes = { "glsl", "gdshader" },
 })
 
--- Enable all installed servers
+-- cssls: ignore Tailwind v4 at-rules (@theme, @apply, etc.)
+vim.lsp.config("cssls", {
+	settings = {
+		css = { lint = { unknownAtRules = "ignore" } },
+		scss = { lint = { unknownAtRules = "ignore" } },
+		less = { lint = { unknownAtRules = "ignore" } },
+	},
+})
+
+-- tailwindcss: trim to filetypes we actually use
+vim.lsp.config("tailwindcss", {
+	filetypes = {
+		"html",
+		"css",
+		"scss",
+		"less",
+		"javascript",
+		"javascriptreact",
+		"typescript",
+		"typescriptreact",
+		"astro",
+		"svelte",
+	},
+})
+
+-- Enable cssls and tailwindcss before the loop so our config takes effect
+vim.lsp.enable("cssls")
+vim.lsp.enable("tailwindcss")
+
+-- Enable all remaining installed servers
 local mason_lspconfig = require("mason-lspconfig")
 for _, server_name in ipairs(mason_lspconfig.get_installed_servers()) do
 	vim.lsp.enable(server_name)

@@ -77,6 +77,9 @@ vim.api.nvim_create_autocmd("VimEnter", {
 	end,
 })
 
+-- LSP-powered inline color previews
+vim.lsp.document_color.enable(true, nil, { style = "virtual" })
+
 -- Buffer tabs
 require("bufferline").setup({
 	options = {

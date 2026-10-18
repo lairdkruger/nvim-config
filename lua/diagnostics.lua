@@ -7,6 +7,8 @@ vim.diagnostic.config({
 		focusable = false,
 		border = "rounded",
 		source = true,
+		wrap = true,
+		max_width = 80,
 	},
 	underline = { severity = sev.ERROR },
 	signs = vim.g.have_nerd_font and {

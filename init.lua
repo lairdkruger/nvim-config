@@ -1,4 +1,11 @@
 require("options")
+
+-- Standalone file-tree pane: skip everything else
+if vim.env.NVIM_PANE == "tree" then
+	require("pane_tree")
+	return
+end
+
 require("plugins")
 require("keymaps")
 require("diagnostics")
@@ -11,3 +18,7 @@ require("completion")
 require("format")
 require("search")
 require("git")
+
+if vim.env.NVIM_PANE == "main" then
+	require("panes").main()
+end

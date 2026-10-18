@@ -24,58 +24,37 @@ vim.keymap.set({ "x", "o" }, "ic", function()
 end, { desc = "TS: inner class" })
 
 -- Colorscheme
-require("evergarden").setup({
-	theme = { variant = "fall" },
-	style = {
-		search = {},
-		incsearch = {},
-		keyword = {},
-		types = {},
-	},
-	overrides = function(theme)
-		return {
-			Visual = { bg = theme.surface2 },
-			Search = { bg = theme.surface2 },
-			IncSearch = { bg = theme.surface2 },
-		}
-	end,
-})
-vim.cmd([[colorscheme evergarden]])
+require("theme")
 
--- File explorer
-require("nvim-tree").setup({
-	disable_netrw = true,
-	sync_root_with_cwd = true,
-	view = { signcolumn = "no" },
-	renderer = {
-		icons = {
-			web_devicons = {
-				file = { enable = true, color = false },
-				folder = { enable = false, color = false },
-			},
-			git_placement = "after",
-			show = { folder_arrow = false },
-		},
-	},
-	update_focused_file = { enable = true },
-	diagnostics = { enable = true, show_on_dirs = true },
-	modified = { enable = true },
-	filters = { git_ignored = false },
-	actions = {
-		change_dir = { enable = false, restrict_above_cwd = true },
-	},
-})
+-- File explorer (in pane mode it runs in its own Ghostty pane; see panes.lua)
+if vim.env.NVIM_PANE ~= "main" then
+	require("tree").setup()
 
-vim.keymap.set("n", "<leader>t", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle file explorer" })
+	vim.keymap.set("n", "<leader>t", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle file explorer" })
 
-vim.api.nvim_create_autocmd("VimEnter", {
-	group = vim.api.nvim_create_augroup("nvim-tree-on-startup", { clear = true }),
-	callback = function(args)
-		if args.file == "" then
-			vim.cmd("NvimTreeToggle")
-		end
-	end,
-})
+	vim.api.nvim_create_autocmd("VimEnter", {
+		group = vim.api.nvim_create_augroup("nvim-tree-on-startup", { clear = true }),
+		callback = function(args)
+			if args.file == "" then
+				vim.cmd("NvimTreeToggle")
+			end
+		end,
+	})
+
+	-- Prevent nvim-tree from interfering with codediff tabs
+	vim.api.nvim_create_autocmd("User", {
+		pattern = "CodeDiffOpen",
+		callback = function()
+			vim.api.nvim_clear_autocmds({ group = "NvimTree" })
+		end,
+	})
+	vim.api.nvim_create_autocmd("User", {
+		pattern = "CodeDiffClose",
+		callback = function()
+			require("nvim-tree.autocmd").global()
+		end,
+	})
+end
 
 -- LSP-powered inline color previews
 vim.lsp.document_color.enable(true, nil, { style = "virtual" })

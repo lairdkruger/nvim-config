@@ -22,20 +22,6 @@ vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHo
 	command = "checktime",
 })
 
--- Prevent nvim-tree from interfering with codediff tabs
-vim.api.nvim_create_autocmd("User", {
-	pattern = "CodeDiffOpen",
-	callback = function()
-		vim.api.nvim_clear_autocmds({ group = "NvimTree" })
-	end,
-})
-vim.api.nvim_create_autocmd("User", {
-	pattern = "CodeDiffClose",
-	callback = function()
-		require("nvim-tree.autocmd").global()
-	end,
-})
-
 -- Disable autocomplete in Telescope prompt
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "TelescopePrompt",
@@ -60,11 +46,12 @@ vim.api.nvim_create_autocmd("FileChangedShell", {
 -- Soft-wrap text-like files without modifying file contents
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = { "markdown", "text" },
-	group = vim.api.nvim_create_augroup("wrap-text-files", { clear = true }),
+	group = vim.api.nvim_create_augroup("markdown-text-settings", { clear = true }),
 	callback = function()
 		vim.opt_local.wrap = true
 		vim.opt_local.linebreak = true
 		vim.opt_local.breakindent = true
+		vim.b.copilot_enabled = false
 	end,
 })
 
@@ -72,6 +59,6 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd("TextYankPost", {
 	group = vim.api.nvim_create_augroup("highlight-yank", { clear = true }),
 	callback = function()
-		vim.highlight.on_yank()
+		vim.hl.on_yank()
 	end,
 })

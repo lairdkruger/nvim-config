@@ -9,6 +9,9 @@ vim.lsp.enable("gdscript")
 -- LSP server installation
 require("mason").setup()
 
+-- Also enables every Mason-installed server (automatic_enable), applying its
+-- fixes for some servers (e.g. astro falls back to its bundled TypeScript when
+-- the project's TS 7 lacks tsserverlibrary.js). Configs below still apply.
 require("mason-lspconfig").setup({
 	ensure_installed = {
 		"lua_ls",
@@ -60,16 +63,6 @@ vim.lsp.config("tailwindcss", {
 		"svelte",
 	},
 })
-
--- Enable cssls and tailwindcss before the loop so our config takes effect
-vim.lsp.enable("cssls")
-vim.lsp.enable("tailwindcss")
-
--- Enable all remaining installed servers
-local mason_lspconfig = require("mason-lspconfig")
-for _, server_name in ipairs(mason_lspconfig.get_installed_servers()) do
-	vim.lsp.enable(server_name)
-end
 
 -- LSP keymaps (0.12 defaults: gra, grr, gri, grn, grt, grx, gO, K, gd, gD)
 -- We override go-to actions to use Telescope for a better picker UI.

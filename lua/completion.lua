@@ -24,4 +24,3 @@ require("blink.cmp").setup({
 	-- Let Copilot ghost text handle AI suggestions separately
 	signature = { enabled = true },
 })
-
